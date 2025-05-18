@@ -1,0 +1,12 @@
+browser-use
+browser-use[memory]
+playwright
+langchain-anthropic
+langchain-openai
+python-dotenv
+geopy
+asyncio
+argparse
+fastapi
+uvicorn
+pydantic

@@ -1,0 +1,9 @@
+.env
+__pycache__/
+*.py[cod]
+*$py.class
+.git/
+.pytest_cache/
+.coverage
+htmlcov/
+.DS_Store

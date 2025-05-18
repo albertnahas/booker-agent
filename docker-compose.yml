@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  booker-agent:
+    build: .
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - BROWSER_HEADLESS=true
+      # Add any other environment variables needed by your application
+    ports:
+      - "8000:8000"
+    command: ["python", "api.py"] 
+    # For direct CLI usage, override command:
+    # command: ["python", "booker.py", "--city", "Amsterdam", "--party_size", "2"]
