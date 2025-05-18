@@ -21,6 +21,17 @@ def parse_args():
     parser.add_argument("--model", default="gpt-4o", help="LLM model to use")
     parser.add_argument("--test", action="store_true", help="Run in test mode")
     parser.add_argument("--check-only", help="Only check status of existing booking ID")
+    parser.add_argument("--restaurant-name", help="Specific restaurant name to search for")
+    
+    # Contact information arguments
+    parser.add_argument("--first-name", help="First name for the reservation")
+    parser.add_argument("--last-name", help="Last name for the reservation")
+    parser.add_argument("--email", help="Email for the reservation")
+    parser.add_argument("--phone-number", help="Phone number for the reservation")
+    parser.add_argument("--booking-description", help="Additional description or special requests")
+    parser.add_argument("--latitude", type=float, help="Latitude coordinate for the search location")
+    parser.add_argument("--longitude", type=float, help="Longitude coordinate for the search location")
+    
     return parser.parse_args()
 
 def start_booking(api_url, params):
@@ -64,9 +75,27 @@ def main():
         "test_mode": args.test
     }
     
-    # Add date if provided
+    # Add optional parameters if provided
     if args.date:
         booking_request["date"] = args.date
+    if args.restaurant_name:
+        booking_request["restaurant_name"] = args.restaurant_name
+        
+    # Add contact information if provided
+    if args.first_name:
+        booking_request["first_name"] = args.first_name
+    if args.last_name:
+        booking_request["last_name"] = args.last_name
+    if args.email:
+        booking_request["email"] = args.email
+    if args.phone_number:
+        booking_request["phone_number"] = args.phone_number
+    if args.booking_description:
+        booking_request["booking_description"] = args.booking_description
+    if args.latitude:
+        booking_request["latitude"] = args.latitude
+    if args.longitude:
+        booking_request["longitude"] = args.longitude
     
     # Start the booking
     print("Starting booking...")

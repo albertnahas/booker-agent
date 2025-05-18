@@ -15,6 +15,18 @@ def parse_args():
     parser.add_argument("--city", default="Amsterdam", help="City to search")
     parser.add_argument("--test-mode", action="store_true", 
                         help="Run in test mode (information only, no booking)")
+    parser.add_argument("--restaurant-name", help="Specific restaurant name to search for")
+    
+    # Contact information arguments
+    parser.add_argument("--first-name", default="Test", help="First name for the reservation")
+    parser.add_argument("--last-name", default="User", help="Last name for the reservation")
+    parser.add_argument("--email", default="test@example.com", help="Email for the reservation")
+    parser.add_argument("--phone-number", default="+31612345678", help="Phone number for the reservation")
+    parser.add_argument("--booking-description", default="Test booking", 
+                        help="Additional description or special requests")
+    parser.add_argument("--latitude", type=float, help="Latitude coordinate for the search location")
+    parser.add_argument("--longitude", type=float, help="Longitude coordinate for the search location")
+                        
     return parser.parse_args()
 
 def main():
@@ -27,8 +39,23 @@ def main():
         "party_size": 2,
         "purpose": "dinner",
         "model": "gpt-4o",
-        "test_mode": args.test_mode
+        "test_mode": args.test_mode,
+        "first_name": args.first_name,
+        "last_name": args.last_name,
+        "email": args.email,
+        "phone_number": args.phone_number,
+        "booking_description": args.booking_description
     }
+    
+    # Add restaurant name if provided
+    if args.restaurant_name:
+        booking_request["restaurant_name"] = args.restaurant_name
+        
+    # Add coordinates if provided
+    if args.latitude:
+        booking_request["latitude"] = args.latitude
+    if args.longitude:
+        booking_request["longitude"] = args.longitude
     
     print(f"Testing API at {args.api_url}")
     print(f"Request payload: {json.dumps(booking_request, indent=2)}")

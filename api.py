@@ -22,6 +22,15 @@ class BookingRequest(BaseModel):
     purpose: str = "dinner"
     model: str = "gpt-4o"
     test_mode: bool = False
+    # Contact information fields
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    email: Optional[str] = None
+    phone_number: Optional[str] = None
+    booking_description: Optional[str] = None
+    restaurant_name: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
 
 # Define the response model
 class BookingResponse(BaseModel):
@@ -64,7 +73,15 @@ async def create_booking(request: BookingRequest, background_tasks: BackgroundTa
         party_size=request.party_size,
         purpose=request.purpose,
         model=request.model,
-        test_mode=request.test_mode
+        test_mode=request.test_mode,
+        first_name=request.first_name,
+        last_name=request.last_name,
+        email=request.email,
+        phone_number=request.phone_number,
+        booking_description=request.booking_description,
+        restaurant_name=request.restaurant_name,
+        latitude=request.latitude,
+        longitude=request.longitude
     )
     
     return BookingResponse(
