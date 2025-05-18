@@ -138,7 +138,7 @@ async def process_booking(booking_id: str, **kwargs):
     try:
         # Update status to processing
         test_mode = kwargs.get('test_mode', False)
-        callback_url = kwargs.get('callback_url')
+        callback_url = kwargs.pop('callback_url', None)  # Remove callback_url so it's not passed to book_restaurant
         operation_type = "Restaurant information retrieval" if test_mode else "Booking"
         
         booking_results[booking_id]["status"] = "processing"
