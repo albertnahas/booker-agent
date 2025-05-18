@@ -10,3 +10,5 @@ argparse
 fastapi
 uvicorn
 pydantic
+aiohttp
+requests
