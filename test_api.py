@@ -38,7 +38,7 @@ def main():
         "time": "18:30",
         "party_size": 2,
         "purpose": "dinner",
-        "model": "gpt-4o",
+        "model": "gpt-4.1",
         "test_mode": args.test_mode,
         "first_name": args.first_name,
         "last_name": args.last_name,

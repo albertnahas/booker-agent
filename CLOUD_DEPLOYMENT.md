@@ -22,7 +22,7 @@ This will start the API server on port 8000.
 2. To run with custom parameters using the CLI (bypassing the API):
 
 ```bash
-docker-compose run --entrypoint "python booker.py" booker-agent --city "Paris" --party_size 4 --date "2025-05-20" --time "19:30" --purpose "birthday dinner" --model "gpt-4o"
+docker-compose run --entrypoint "python booker.py" booker-agent --city "Paris" --party_size 4 --date "2025-05-20" --time "19:30" --purpose "birthday dinner" --model "gpt-4.1"
 ```
 
 ### Environment Variables
@@ -76,7 +76,7 @@ curl -X POST "http://your-container-url:8000/book" \
     "time": "19:30",
     "party_size": 4,
     "purpose": "birthday dinner",
-    "model": "gpt-4o",
+    "model": "gpt-4.1",
     "test_mode": true
   }'
 ```
@@ -118,7 +118,7 @@ The response will include the current status of the booking:
     "time": "19:30",
     "party_size": 4,
     "purpose": "birthday dinner",
-    "model": "gpt-4o",
+    "model": "gpt-4.1",
     "test_mode": true,
     "result": "Successful booking at Restaurant XYZ for May 20, 2025 at 19:30..."
   }

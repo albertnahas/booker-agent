@@ -48,7 +48,7 @@ The booking agent accepts the following parameters:
 3. `time`: Booking time in HH:MM format (default: 18:00)
 4. `party_size`: Number of people (default: 2)
 5. `purpose`: Purpose of the reservation (default: dinner)
-6. `model`: LLM model to use ('claude-3-5-sonnet-latest' or 'gpt-4o')
+6. `model`: LLM model to use ('claude-3-5-sonnet-latest' or 'gpt-4.1')
 7. `test_mode`: Whether to run in test mode without confirming booking
 
 ## Example Usage

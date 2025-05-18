@@ -1,12 +1,17 @@
 import os
 import argparse
 import asyncio
+import aiohttp
+import logging
 from typing import Optional
 from datetime import datetime, timedelta
 from fastapi import FastAPI, BackgroundTasks, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, HttpUrl
 import uvicorn
 from booker import book_restaurant
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 # Create FastAPI app
 app = FastAPI(title="Restaurant Booking API", 
@@ -20,7 +25,7 @@ class BookingRequest(BaseModel):
     time: str = "18:00"
     party_size: int = 2
     purpose: str = "dinner"
-    model: str = "gpt-4o"
+    model: str = "gpt-4.1"
     test_mode: bool = False
     # Contact information fields
     first_name: Optional[str] = None
@@ -31,6 +36,8 @@ class BookingRequest(BaseModel):
     restaurant_name: Optional[str] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
+    # Callback URL for webhook notifications
+    callback_url: Optional[HttpUrl] = None
 
 # Define the response model
 class BookingResponse(BaseModel):
@@ -81,7 +88,8 @@ async def create_booking(request: BookingRequest, background_tasks: BackgroundTa
         booking_description=request.booking_description,
         restaurant_name=request.restaurant_name,
         latitude=request.latitude,
-        longitude=request.longitude
+        longitude=request.longitude,
+        callback_url=request.callback_url
     )
     
     return BookingResponse(
@@ -104,10 +112,33 @@ async def get_booking_status(booking_id: str):
         details=result["details"]
     )
 
+async def send_callback(callback_url: str, data: dict):
+    """
+    Send booking results to the provided callback URL.
+    
+    Args:
+        callback_url: The URL to send the callback to
+        data: The data to send in the callback
+    """
+    if not callback_url:
+        return
+        
+    try:
+        logging.info(f"Sending callback to {callback_url}")
+        async with aiohttp.ClientSession() as session:
+            async with session.post(callback_url, json=data) as response:
+                if response.status >= 400:
+                    logging.error(f"Callback to {callback_url} failed with status {response.status}")
+                else:
+                    logging.info(f"Callback to {callback_url} succeeded with status {response.status}")
+    except Exception as e:
+        logging.error(f"Error sending callback to {callback_url}: {str(e)}")
+
 async def process_booking(booking_id: str, **kwargs):
     try:
         # Update status to processing
         test_mode = kwargs.get('test_mode', False)
+        callback_url = kwargs.get('callback_url')
         operation_type = "Restaurant information retrieval" if test_mode else "Booking"
         
         booking_results[booking_id]["status"] = "processing"
@@ -121,10 +152,30 @@ async def process_booking(booking_id: str, **kwargs):
         booking_results[booking_id]["message"] = f"{operation_type} completed"
         booking_results[booking_id]["details"]["result"] = result
         
+        # Send callback if URL was provided
+        if callback_url:
+            callback_data = {
+                "status": "completed",
+                "message": f"{operation_type} completed",
+                "booking_id": booking_id,
+                "details": booking_results[booking_id]["details"]
+            }
+            await send_callback(callback_url, callback_data)
+        
     except Exception as e:
         # Handle errors
         booking_results[booking_id]["status"] = "failed"
         booking_results[booking_id]["message"] = f"Operation failed: {str(e)}"
+        
+        # Send error callback if URL was provided
+        if callback_url:
+            callback_data = {
+                "status": "failed",
+                "message": f"Operation failed: {str(e)}",
+                "booking_id": booking_id,
+                "details": booking_results[booking_id]["details"]
+            }
+            await send_callback(callback_url, callback_data)
 
 if __name__ == "__main__":
     # Run the API server

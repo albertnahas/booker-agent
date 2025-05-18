@@ -18,10 +18,11 @@ def parse_args():
     parser.add_argument("--time", default="18:00", help="Booking time (HH:MM)")
     parser.add_argument("--party-size", type=int, default=2, help="Number of people")
     parser.add_argument("--purpose", default="dinner", help="Purpose of reservation")
-    parser.add_argument("--model", default="gpt-4o", help="LLM model to use")
+    parser.add_argument("--model", default="gpt-4.1", help="LLM model to use")
     parser.add_argument("--test", action="store_true", help="Run in test mode")
     parser.add_argument("--check-only", help="Only check status of existing booking ID")
     parser.add_argument("--restaurant-name", help="Specific restaurant name to search for")
+    parser.add_argument("--callback-url", help="URL to receive webhook notifications when booking completes")
     
     # Contact information arguments
     parser.add_argument("--first-name", help="First name for the reservation")
@@ -80,6 +81,8 @@ def main():
         booking_request["date"] = args.date
     if args.restaurant_name:
         booking_request["restaurant_name"] = args.restaurant_name
+    if args.callback_url:
+        booking_request["callback_url"] = args.callback_url
         
     # Add contact information if provided
     if args.first_name:
@@ -105,6 +108,7 @@ def main():
     
     # Poll for status updates
     print("Polling for status updates (press Ctrl+C to stop)...")
+    print("Note: If you provided a callback URL, results will also be sent there when ready")
     try:
         while True:
             status = check_status(args.api_url, booking_id)

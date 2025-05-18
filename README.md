@@ -9,6 +9,7 @@ An automated agent for booking restaurant reservations using browser automation 
 - Flexible date, time, and party size options
 - Test mode to simulate the booking process without confirming
 - Support for multiple LLM providers (OpenAI and Anthropic)
+- RESTful API with webhook callbacks for asynchronous notifications
 
 ## Prerequisites
 
@@ -61,7 +62,7 @@ Available options:
 - `--time`: Booking time in HH:MM format (default: 18:00)
 - `--party_size`: Number of people (default: 2)
 - `--purpose`: Purpose of the reservation (default: dinner)
-- `--model`: LLM model to use: 'claude-3-5-sonnet-latest' or 'gpt-4o' (default: gpt-4.1)
+- `--model`: LLM model to use: 'claude-3-5-sonnet-latest' or 'gpt-4.1' (default: gpt-4.1)
 - `--test`: Run in test mode without confirming the booking
 
 ### Examples
@@ -83,6 +84,37 @@ Use Claude instead of GPT:
 ```bash
 python booker.py --model claude-3-5-sonnet-latest
 ```
+
+## API Usage
+
+The project includes a RESTful API for making bookings programmatically. Start the API server with:
+
+```bash
+python api.py
+```
+
+This will start the API server on port 8000. You can then use the API to make bookings.
+
+### API Endpoints
+
+- `GET /`: API health check
+- `POST /book`: Start a booking process
+- `GET /status/{booking_id}`: Check the status of a booking
+
+### Webhook Callbacks
+
+The API supports webhook callbacks to notify your application when a booking is completed. To use this feature:
+
+1. Include a `callback_url` parameter in your booking request
+2. When the booking is completed, the API will send a POST request to your callback URL with the booking results
+
+Example:
+
+```bash
+python client.py --api-url http://localhost:8000 --city "Amsterdam" --callback-url "https://your-server.com/webhook"
+```
+
+For detailed information about the callback feature, see [CALLBACK_API.md](CALLBACK_API.md).
 
 ## How It Works
 

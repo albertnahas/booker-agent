@@ -54,8 +54,8 @@ def parse_arguments():
     parser.add_argument("--time", help="Booking time (format: HH:MM, defaults to 18:00)")
     parser.add_argument("--party_size", type=int, help="Number of people in the party (defaults to 2)")
     parser.add_argument("--purpose", default="dinner", help="Purpose of the reservation (default: dinner)")
-    parser.add_argument("--model", default="gpt-4.1", choices=["claude-3-5-sonnet-latest", "gpt-4o"],
-                       help="LLM model to use: 'claude-3-5-sonnet-latest' or 'gpt-4o'")
+    parser.add_argument("--model", default="gpt-4.1", choices=["claude-3-5-sonnet-latest", "gpt-4.1"],
+                       help="LLM model to use: 'claude-3-5-sonnet-latest' or 'gpt-4.1'")
     parser.add_argument("--test", action="store_true", help="Run in test mode without confirming booking")
     parser.add_argument("--restaurant-name", help="Specific restaurant name to search for")
     
